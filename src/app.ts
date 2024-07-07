@@ -3,14 +3,10 @@ const app = express();
 const PORT = 5000;
 import "./database/connection";
 
+import userRoute from "./routes/userRoute";
+app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World");
-});
-
-app.get("/about", (req: Request, res: Response) => {
-  console.log("This is about page");
-});
+app.use("", userRoute);
 
 app.listen(PORT, () => {
   console.log("Server listening at", PORT);

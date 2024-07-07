@@ -8,12 +8,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const sequelize = new sequelize_typescript_1.Sequelize({
     database: process.env.DB_NAME,
-    dialect: "mysql", // Change to "mysql"
+    dialect: "mysql",
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD || undefined, // Handle empty password case
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
-    models: [__dirname + "/model"],
+    models: [__dirname + "/models"],
     pool: {
         max: 5,
         min: 0,

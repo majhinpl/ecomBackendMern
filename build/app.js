@@ -7,12 +7,9 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const PORT = 5000;
 require("./database/connection");
-app.get("/", (req, res) => {
-    res.send("Hello World");
-});
-app.get("/about", (req, res) => {
-    console.log("This is about page");
-});
+const userRoute_1 = __importDefault(require("./routes/userRoute"));
+app.use(express_1.default.json());
+app.use("", userRoute_1.default);
 app.listen(PORT, () => {
     console.log("Server listening at", PORT);
 });
