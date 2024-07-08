@@ -1,6 +1,9 @@
 import { Sequelize } from "sequelize-typescript";
 
 import dotenv from "dotenv";
+import User from "./models/userModel";
+import Product from "./models/productModel";
+import Category from "./models/categoryModel";
 dotenv.config();
 
 const sequelize = new Sequelize({
@@ -36,5 +39,13 @@ sequelize
   .catch((err) => {
     console.error("Error syncing database:", err);
   });
+
+// relationships
+User.hasMany(Product, { foreignKey: "userId" });
+Product.belongsTo(User, { foreignKey: "userId" });
+
+Category.hasOne(Product, { foreignKey: "categoryId" });
+Product.belongsTo(Category, { foreignKey: "categoryId" });
+
 
 export default sequelize;

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../database/models/userModel";
 import { Next } from "mysql2/typings/mysql/lib/parsers/typeCast";
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   user?: {
     username: string;
     email: string;
