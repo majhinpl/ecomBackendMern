@@ -1,28 +1,27 @@
 import express, { Router } from "express";
 import authMiddleware, { Role } from "../middleware/authMiddleware";
+import categoryController from "../controllers/categoryController";
 const router: Router = express.Router();
-import { multer, storage } from "../middleware/multerMiddleware";
-import productController from "../controllers/productController";
-
-const upload = multer({ storage: storage });
 
 router
   .route("/")
   .post(
     authMiddleware.isAuthenticated,
     authMiddleware.restrictTo(Role.Admin),
-    upload.single("image"),
-    productController.addProduct
+    categoryController.addCategory
   )
-  .get(productController.getAllProduct);
+  .get(categoryController.getCategorys);
 
 router
   .route("/:id")
-  .get(productController.getSingleProduct)
   .delete(
+    authMiddleware.restrictTo(Role.Admin),
+    categoryController.deleteCategory
+  )
+  .patch(
     authMiddleware.isAuthenticated,
     authMiddleware.restrictTo(Role.Admin),
-    productController.deleteProduct
+    categoryController.updateCategory
   );
 
 export default router;
