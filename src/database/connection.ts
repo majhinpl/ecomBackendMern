@@ -5,6 +5,9 @@ import User from "./models/userModel";
 import Product from "./models/productModel";
 import Category from "./models/categoryModel";
 import Cart from "./models/cartModel";
+import Order from "./models/orderModel";
+import OrderDetail from "./models/orderDetails";
+import Payment from "./models/paymentModel";
 dotenv.config();
 
 const sequelize = new Sequelize({
@@ -55,5 +58,17 @@ Cart.belongsTo(User, { foreignKey: "userId" });
 // user-cart relation
 Product.hasMany(Cart, { foreignKey: "productId" });
 Cart.belongsTo(Product, { foreignKey: "productId" });
+
+// order-orderDetails relation
+Order.hasMany(OrderDetail, { foreignKey: "orderId" });
+OrderDetail.belongsTo(Order, { foreignKey: "orderId" });
+
+// orderDetails-product relation
+Product.hasMany(OrderDetail, { foreignKey: "productId" });
+Product.belongsTo(Product, { foreignKey: "productId" });
+
+// order-payment relation
+Payment.hasOne(Order, { foreignKey: "paymentId" });
+Order.belongsTo(Payment, { foreignKey: "paymentId" });
 
 export default sequelize;
