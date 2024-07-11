@@ -10,6 +10,8 @@ import categoryRoute from "./routes/categoryRoute";
 import adminSeeder from "./adminSeeder";
 import categoryController from "./controllers/categoryController";
 import cartRoute from "./routes/cartRoute";
+import orderRoute from "./routes/orderRoute";
+
 app.use(express.json());
 
 // admin seeder
@@ -20,6 +22,7 @@ app.use("", userRoute);
 app.use("/admin/product", productRoute);
 app.use("/admin/category", categoryRoute);
 app.use("/customer/cart", cartRoute);
+app.use("/customer/order", orderRoute);
 
 app.listen(PORT, () => {
   categoryController.seedCategory();
