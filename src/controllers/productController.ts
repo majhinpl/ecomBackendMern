@@ -28,7 +28,8 @@ class ProductController {
       !productName ||
       !productDescription ||
       !productTotalStockQty ||
-      !productPrice
+      !productPrice ||
+      !categoryId
     ) {
       res.status(400).json({
         message: "please provide required field",
@@ -50,7 +51,7 @@ class ProductController {
     });
   }
 
-  async getAllProduct(req: AuthRequest, res: Response): Promise<void> {
+  async getAllProduct(req: Request, res: Response): Promise<void> {
     const data = await Product.findAll({
       include: [
         {
@@ -71,7 +72,7 @@ class ProductController {
 
   async getSingleProduct(req: Request, res: Response): Promise<void> {
     const id = req.params.id;
-    const data = await Product.findAll({
+    const data = await Product.findOne({
       where: {
         id: id,
       },
@@ -87,7 +88,7 @@ class ProductController {
       ],
     });
 
-    if (data.length === 0) {
+    if (!data) {
       res.status(404).json({
         message: "No product with that Id",
       });
