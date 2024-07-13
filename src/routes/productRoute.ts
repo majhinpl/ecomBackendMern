@@ -15,15 +15,15 @@ router
     upload.single("image"),
     errorHandler(productController.addProduct)
   )
-  .get(productController.getAllProduct);
+  .get(errorHandler(productController.getAllProduct));
 
 router
   .route("/:id")
-  .get(productController.getSingleProduct)
+  .get(errorHandler(productController.getSingleProduct))
   .delete(
     authMiddleware.isAuthenticated,
     authMiddleware.restrictTo(Role.Admin),
-    productController.deleteProduct
+    errorHandler(productController.deleteProduct)
   );
 
 export default router;
