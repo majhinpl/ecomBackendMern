@@ -33,9 +33,16 @@ class CartController {
         productId,
       });
     }
+
+    const data = await Cart.findAll({
+      where: {
+        userId,
+      },
+    });
+
     res.status(200).json({
       message: "Product added to cart",
-      data: cartItem,
+      data,
     });
   }
 
@@ -48,7 +55,7 @@ class CartController {
       include: [
         {
           model: Product,
-          attributes: ["productName", "productDescription", "productImageUrl"],
+
           include: [
             {
               model: Category,
@@ -57,8 +64,8 @@ class CartController {
           ],
         },
       ],
-      attributes: ["productId", "quantity"],
     });
+
     if (cartItem.length === 0) {
       res.status(404).json({
         message: "No items in the cart",
@@ -100,7 +107,7 @@ class CartController {
     const { quantity } = req.body;
     if (!quantity) {
       res.status(400).json({
-        message: "Please providequantity",
+        message: "Please provide quantity",
       });
       return;
     }

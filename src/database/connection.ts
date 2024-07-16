@@ -44,14 +44,15 @@ sequelize
     console.error("Error syncing database:", err);
   });
 
-// relationships
+// Relationships
+
 User.hasMany(Product, { foreignKey: "userId" });
 Product.belongsTo(User, { foreignKey: "userId" });
 
 Category.hasOne(Product, { foreignKey: "categoryId" });
 Product.belongsTo(Category, { foreignKey: "categoryId" });
 
-// Product-cart relation
+// product-cart relation
 User.hasMany(Cart, { foreignKey: "userId" });
 Cart.belongsTo(User, { foreignKey: "userId" });
 
@@ -59,19 +60,19 @@ Cart.belongsTo(User, { foreignKey: "userId" });
 Product.hasMany(Cart, { foreignKey: "productId" });
 Cart.belongsTo(Product, { foreignKey: "productId" });
 
-// order-orderDetails relation
+// order-orderdetail relation
 Order.hasMany(OrderDetail, { foreignKey: "orderId" });
 OrderDetail.belongsTo(Order, { foreignKey: "orderId" });
 
-// orderDetails-product relation
+// orderdetail-product relation
 Product.hasMany(OrderDetail, { foreignKey: "productId" });
-Product.belongsTo(Product, { foreignKey: "productId" });
+OrderDetail.belongsTo(Product, { foreignKey: "productId" });
 
-// order-payment relation
+//order-payment relation
 Payment.hasOne(Order, { foreignKey: "paymentId" });
 Order.belongsTo(Payment, { foreignKey: "paymentId" });
 
-// order-user relation
+//order-user relation
 User.hasMany(Order, { foreignKey: "userId" });
 Order.belongsTo(User, { foreignKey: "userId" });
 

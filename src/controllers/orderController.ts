@@ -14,6 +14,7 @@ import Payment from "../database/models/paymentModel";
 import OrderDetail from "../database/models/orderDetails";
 import axios from "axios";
 import Product from "../database/models/productModel";
+import Cart from "../database/models/cartModel";
 
 class ExtendedOrder extends Order {
   declare paymentId: string | null;
@@ -40,6 +41,7 @@ class OrderController {
       res.status(400).json({
         message: "Please provide required field",
       });
+      return;
     }
 
     const paymentData = await Payment.create({
@@ -54,21 +56,30 @@ class OrderController {
       paymentId: paymentData.id,
     });
 
+    let responseOrderData;
+
     for (let i = 0; i < items.length; i++) {
-      await OrderDetail.create({
+      responseOrderData = await OrderDetail.create({
         quantity: items[i].quantity,
-        productId: items[0].productId,
+        productId: items[i].productId,
         orderId: orderData.id,
+      });
+
+      await Cart.destroy({
+        where: {
+          productId: items[i].productId,
+          userId: userId,
+        },
       });
     }
 
     if (paymentDetails.paymentMethod === PaymentMethod.Khalti) {
       // Khalti integration
       const data = {
-        return_url: "http://localhost:5000/success",
+        return_url: "http://localhost:5173/success",
         purchase_order_id: orderData.id,
         amount: totalAmount * 100,
-        website_url: "http://localhost:5000",
+        website_url: "http://localhost:5173",
         purchase_order_name: "orderName_" + orderData.id,
       };
 
@@ -87,6 +98,7 @@ class OrderController {
       res.status(200).json({
         message: "order placed successfully",
         url: khaltiResponse.payment_url,
+        data: responseOrderData,
       });
     } else {
       res.status(200).json({
@@ -97,7 +109,6 @@ class OrderController {
 
   async verifyTransaction(req: AuthRequest, res: Response): Promise<void> {
     const { pidx } = req.body;
-    const userId = req.user?.id;
 
     if (!pidx) {
       res.status(400).json({
@@ -138,6 +149,8 @@ class OrderController {
       });
     }
   }
+
+  // Customer side starts here
 
   async fetchMyOrder(req: AuthRequest, res: Response): Promise<void> {
     const userId = req.user?.id;
@@ -249,7 +262,7 @@ class OrderController {
   async changePaymentStatus(req: Request, res: Response): Promise<void> {
     const orderId = req.params.id;
     const paymentStatus: PaymentStatus = req.body.paymentStatus;
-    const order = await Order.findByPk(orderId);
+    const order: any = await Order.findByPk(orderId);
     const extendedOrder: ExtendedOrder = order as ExtendedOrder;
     await Payment.update(
       {
@@ -270,17 +283,19 @@ class OrderController {
     const orderId = req.params.id;
     const order = await Order.findByPk(orderId);
     const extendedOrder: ExtendedOrder = order as ExtendedOrder;
-    await OrderDetail.destroy({
-      where: {
-        orderId: orderId,
-      },
-    });
-    await Payment.destroy({
-      where: {
-        id: extendedOrder.paymentId,
-      },
-    });
     if (order) {
+      await OrderDetail.destroy({
+        where: {
+          orderId: orderId,
+        },
+      });
+
+      await Payment.destroy({
+        where: {
+          id: extendedOrder.paymentId,
+        },
+      });
+
       await Order.destroy({
         where: {
           id: orderId,
