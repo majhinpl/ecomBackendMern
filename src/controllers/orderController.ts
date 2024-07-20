@@ -15,6 +15,8 @@ import OrderDetail from "../database/models/orderDetails";
 import axios from "axios";
 import Product from "../database/models/productModel";
 import Cart from "../database/models/cartModel";
+import User from "../database/models/userModel";
+import Category from "../database/models/categoryModel";
 
 class ExtendedOrder extends Order {
   declare paymentId: string | null;
@@ -184,9 +186,28 @@ class OrderController {
       where: {
         orderId,
       },
+
       include: [
         {
           model: Product,
+          include: [
+            {
+              model: Category,
+              attributes: ["categoryName"],
+            },
+          ],
+        },
+        {
+          include: [
+            {
+              model: Payment,
+              attributes: ["paymentMethod", "paymentStatus"],
+            },
+            {
+              model: User,
+              attributes: ["username", "email"],
+            },
+          ],
         },
       ],
     });

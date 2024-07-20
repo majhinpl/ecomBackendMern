@@ -33,7 +33,6 @@ class CartController {
         productId,
       });
     }
-
     const data = await Cart.findAll({
       where: {
         userId,
