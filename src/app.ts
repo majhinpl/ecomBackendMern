@@ -1,6 +1,6 @@
 import express, { Request, Response, Application } from "express";
 const app = express();
-const PORT = 5000;
+const PORT = 3001;
 
 import "./database/connection";
 

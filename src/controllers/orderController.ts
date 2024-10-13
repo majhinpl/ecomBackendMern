@@ -332,6 +332,28 @@ class OrderController {
       });
     }
   }
+
+  async fetchOrders(req: AuthRequest, res: Response): Promise<void> {
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: Payment,
+        },
+      ],
+    });
+
+    if (orders.length > 0) {
+      res.status(200).json({
+        message: "order fetched successfully",
+        data: orders,
+      });
+    } else {
+      res.status(404).json({
+        message: "You have empty orders",
+        data: [],
+      });
+    }
+  }
 }
 
 export default new OrderController();
